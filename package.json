@@ -1,0 +1,58 @@
+{
+  "name": "thread-dump-analyzer",
+  "displayName": "Thread Dump Analyzer",
+  "description": "This used to analysed thread dump with good UI/UX",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.102.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "thread-dump-analyzer.viewThreadDump",
+        "title": "Analyze Thread Dump"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "thread-dump-analyzer.viewThreadDump",
+          "when": "resourceExtname == '.txt' || resourceExtname == '.log' || resourceExtname == '.out'",
+          "title": "Analyze Thread Dump",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "properties": {
+        "thread-dump-analyzer.jdkPath": {
+          "type": "string",
+          "default": "java",
+          "description": "Path to your Java executable"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.102.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.25.1"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  }
+}
