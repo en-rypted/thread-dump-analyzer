@@ -4,7 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Summery } from "./components/Summery.jsx";
 import { Dashboard } from "./components/Dashboard.jsx";
-import { Tabs, Drawer, Button } from "@chakra-ui/react";
+import { Tabs, Drawer, Button, Box } from "@chakra-ui/react";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import {
   LuFolder,
@@ -14,394 +14,23 @@ import {
   LuClock,
   LuInfo,
 } from "react-icons/lu";
+import { FaBookDead } from "react-icons/fa";
+import { SiLastpass } from "react-icons/si";
 import ThreadCard from "./components/ThreadCard.jsx";
 import { ThreadsByState } from "./components/ThreadsByState.jsx";
 import { TimeStampDrawer } from "./components/TimeStampDrawer.jsx";
+import {dataDummy} from '../../test/dummyData'
+import Deadlock from "./components/Deadlock";
+import { LastExecutedMethods } from "./components/LastExecutedMethods";
+import { PiTreeStructure } from "react-icons/pi";
 
-const dataDummy = [
-  {
-    timestamp: "12/2/2034 13:12:23",
-    threads: [
-      {
-        name: "Thread-1",
-        threadNo: "11",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c002800",
-        nid: "0x3b03",
-        state: "BLOCKED",
-        stateDetails: "on object monitor",
-        stackTrace: ["com.example.LockExample.methodA(LockExample.java:12)"],
-        waitingOnLock: "0x00000000d010c6e0",
-        ownsLocks: ["0x00000000d010c6f0"],
-      },
-      {
-        name: "Thread-2",
-        threadNo: "12",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c003000",
-        nid: "0x3b04",
-        state: "BLOCKED",
-        stateDetails: "on object monitor",
-        stackTrace: ["com.example.LockExample.methodB(LockExample.java:22)"],
-        waitingOnLock: "0x00000000d010c6f0",
-        ownsLocks: ["0x00000000d010c6e0"],
-      },
-      {
-        name: "Thread-3",
-        threadNo: "13",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c004000",
-        nid: "0x3b05",
-        state: "RUNNABLE",
-        stackTrace: ["com.example.Worker.run(Worker.java:45)"],
-        ownsLocks: [],
-      },
-      {
-        name: "Thread-4",
-        threadNo: "14",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c005000",
-        nid: "0x3b06",
-        state: "WAITING",
-        stateDetails: "parking",
-        stackTrace: [
-          "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-          "java.util.concurrent.FutureTask.awaitDone(FutureTask.java:425)",
-          "java.util.concurrent.FutureTask.get(FutureTask.java:207)",
-        ],
-        ownsLocks: [],
-      },
-    ],
-    threadDeadlocks: {
-      jvmReportedDeadlocks: [],
-      inferredDeadlocks: {
-        "0x00007f8e3c002800--}0x00007f8e3c003000": {
-          "0x00007f8e3c003000": {
-            name: "Thread-2",
-            threadNo: "12",
-            category: "APPLICATION",
-            daemon: false,
-            priority: 5,
-            osPriority: "0",
-            tid: "0x00007f8e3c003000",
-            nid: "0x3b04",
-            state: "BLOCKED",
-            stateDetails: "on object monitor",
-            stackTrace: [
-              "com.example.LockExample.methodB(LockExample.java:22)",
-            ],
-            waitingOnLock: "0x00000000d010c6f0",
-            ownsLocks: ["0x00000000d010c6e0"],
-          },
-          "0x00007f8e3c002800": {
-            name: "Thread-1",
-            threadNo: "11",
-            category: "APPLICATION",
-            daemon: false,
-            priority: 5,
-            osPriority: "0",
-            tid: "0x00007f8e3c002800",
-            nid: "0x3b03",
-            state: "BLOCKED",
-            stateDetails: "on object monitor",
-            stackTrace: [
-              "com.example.LockExample.methodA(LockExample.java:12)",
-            ],
-            waitingOnLock: "0x00000000d010c6e0",
-            ownsLocks: ["0x00000000d010c6f0"],
-          },
-        },
-      },
-    },
-    threadGroupResult: {
-      waiting: [
-        {
-          name: "Thread-4",
-          threadNo: "14",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c005000",
-          nid: "0x3b06",
-          state: "WAITING",
-          stateDetails: "parking",
-          stackTrace: [
-            "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-            "java.util.concurrent.FutureTask.awaitDone(FutureTask.java:425)",
-            "java.util.concurrent.FutureTask.get(FutureTask.java:207)",
-          ],
-          ownsLocks: [],
-        },
-      ],
-      runnable: [
-        {
-          name: "Thread-3",
-          threadNo: "13",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c004000",
-          nid: "0x3b05",
-          state: "RUNNABLE",
-          stackTrace: ["com.example.Worker.run(Worker.java:45)"],
-          ownsLocks: [],
-        },
-      ],
-      timedWaiting: [],
-      blocked: [
-        {
-          name: "Thread-1",
-          threadNo: "11",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c002800",
-          nid: "0x3b03",
-          state: "BLOCKED",
-          stateDetails: "on object monitor",
-          stackTrace: ["com.example.LockExample.methodA(LockExample.java:12)"],
-          waitingOnLock: "0x00000000d010c6e0",
-          ownsLocks: ["0x00000000d010c6f0"],
-        },
-        {
-          name: "Thread-2",
-          threadNo: "12",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c003000",
-          nid: "0x3b04",
-          state: "BLOCKED",
-          stateDetails: "on object monitor",
-          stackTrace: ["com.example.LockExample.methodB(LockExample.java:22)"],
-          waitingOnLock: "0x00000000d010c6f0",
-          ownsLocks: ["0x00000000d010c6e0"],
-        },
-      ],
-    },
-    threadSummary: {
-      totalThreads: 4,
-      deadlockedThreads: 1,
-      waitingThreads: 1,
-      runnableThreads: 1,
-      timedWaitingThreads: 0,
-      blockedThreads: 2,
-      topWaitingMethod:
-        "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-      topRunnableMethod: "com.example.Worker.run(Worker.java:45)",
-    },
-  },
-   {
-    timestamp: "12/3/2034 13:12:23",
-    threads: [
-      {
-        name: "Thread-1",
-        threadNo: "11",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c002800",
-        nid: "0x3b03",
-        state: "BLOCKED",
-        stateDetails: "on object monitor",
-        stackTrace: ["com.example.LockExample.methodA(LockExample.java:12)"],
-        waitingOnLock: "0x00000000d010c6e0",
-        ownsLocks: ["0x00000000d010c6f0"],
-      },
-      {
-        name: "Thread-2",
-        threadNo: "12",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c003000",
-        nid: "0x3b04",
-        state: "BLOCKED",
-        stateDetails: "on object monitor",
-        stackTrace: ["com.example.LockExample.methodB(LockExample.java:22)"],
-        waitingOnLock: "0x00000000d010c6f0",
-        ownsLocks: ["0x00000000d010c6e0"],
-      },
-      {
-        name: "Thread-3",
-        threadNo: "13",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c004000",
-        nid: "0x3b05",
-        state: "RUNNABLE",
-        stackTrace: ["com.example.Worker.run(Worker.java:45)"],
-        ownsLocks: [],
-      },
-      {
-        name: "Thread-4",
-        threadNo: "14",
-        category: "APPLICATION",
-        daemon: false,
-        priority: 5,
-        osPriority: "0",
-        tid: "0x00007f8e3c005000",
-        nid: "0x3b06",
-        state: "WAITING",
-        stateDetails: "parking",
-        stackTrace: [
-          "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-          "java.util.concurrent.FutureTask.awaitDone(FutureTask.java:425)",
-          "java.util.concurrent.FutureTask.get(FutureTask.java:207)",
-        ],
-        ownsLocks: [],
-      },
-    ],
-    threadDeadlocks: {
-      jvmReportedDeadlocks: [],
-      inferredDeadlocks: {
-        "0x00007f8e3c002800--}0x00007f8e3c003000": {
-          "0x00007f8e3c003000": {
-            name: "Thread-2",
-            threadNo: "12",
-            category: "APPLICATION",
-            daemon: false,
-            priority: 5,
-            osPriority: "0",
-            tid: "0x00007f8e3c003000",
-            nid: "0x3b04",
-            state: "BLOCKED",
-            stateDetails: "on object monitor",
-            stackTrace: [
-              "com.example.LockExample.methodB(LockExample.java:22)",
-            ],
-            waitingOnLock: "0x00000000d010c6f0",
-            ownsLocks: ["0x00000000d010c6e0"],
-          },
-          "0x00007f8e3c002800": {
-            name: "Thread-1",
-            threadNo: "11",
-            category: "APPLICATION",
-            daemon: false,
-            priority: 5,
-            osPriority: "0",
-            tid: "0x00007f8e3c002800",
-            nid: "0x3b03",
-            state: "BLOCKED",
-            stateDetails: "on object monitor",
-            stackTrace: [
-              "com.example.LockExample.methodA(LockExample.java:12)",
-            ],
-            waitingOnLock: "0x00000000d010c6e0",
-            ownsLocks: ["0x00000000d010c6f0"],
-          },
-        },
-      },
-    },
-    threadGroupResult: {
-      waiting: [
-        {
-          name: "Thread-4",
-          threadNo: "14",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c005000",
-          nid: "0x3b06",
-          state: "WAITING",
-          stateDetails: "parking",
-          stackTrace: [
-            "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-            "java.util.concurrent.FutureTask.awaitDone(FutureTask.java:425)",
-            "java.util.concurrent.FutureTask.get(FutureTask.java:207)",
-          ],
-          ownsLocks: [],
-        },
-      ],
-      runnable: [
-        {
-          name: "Thread-3",
-          threadNo: "13",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c004000",
-          nid: "0x3b05",
-          state: "RUNNABLE",
-          stackTrace: ["com.example.Worker.run(Worker.java:45)"],
-          ownsLocks: [],
-        },
-      ],
-      timedWaiting: [],
-      blocked: [
-        {
-          name: "Thread-1",
-          threadNo: "11",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c002800",
-          nid: "0x3b03",
-          state: "BLOCKED",
-          stateDetails: "on object monitor",
-          stackTrace: ["com.example.LockExample.methodA(LockExample.java:12)"],
-          waitingOnLock: "0x00000000d010c6e0",
-          ownsLocks: ["0x00000000d010c6f0"],
-        },
-        {
-          name: "Thread-2",
-          threadNo: "12",
-          category: "APPLICATION",
-          daemon: false,
-          priority: 5,
-          osPriority: "0",
-          tid: "0x00007f8e3c003000",
-          nid: "0x3b04",
-          state: "BLOCKED",
-          stateDetails: "on object monitor",
-          stackTrace: ["com.example.LockExample.methodB(LockExample.java:22)"],
-          waitingOnLock: "0x00000000d010c6f0",
-          ownsLocks: ["0x00000000d010c6e0"],
-        },
-      ],
-    },
-    threadSummary: {
-      totalThreads: 24,
-      deadlockedThreads: 3,
-      waitingThreads: 5,
-      runnableThreads: 3,
-      timedWaitingThreads: 5,
-      blockedThreads: 3,
-      topWaitingMethod:
-        "java.util.concurrent.locks.LockSupport.park(LockSupport.java:194)",
-      topRunnableMethod: "com.example.Worker.run(Worker.java:45)",
-    },
-  },
-];
 
 function App() {
   const [threadDumpData, setThreadDumpData] = useState(null);
   const [data,setData] = useState([]);
   const chnageTheadDumpData = (index) => {
-    setThreadDumpData(data[index]);
+   
+    setThreadDumpData({...data[index]});
     setIsOpen(false)
   };
   const [timestamps ,setTimetamps] = useState([]);
@@ -410,9 +39,14 @@ function App() {
   const [input, setInput] = useState('');
 
   useEffect(() => {
-     const vscode = window.acquireVsCodeApi();
-    vscode.postMessage({ command: 'hello', text: 'Hi from React!' });
-
+    //  const vscode = window.acquireVsCodeApi();
+    // vscode.postMessage({ command: 'hello', text: 'Hi from React!' });
+     let timeDummy = dataDummy.map(item=>item.timestamp);
+          console.log(timeDummy);
+          setTimetamps([...timeDummy])
+         
+          setData(dataDummy);
+          setThreadDumpData(dataDummy[0]);
     const handleMessage = (event) => {
       const message = event.data;
 
@@ -501,29 +135,34 @@ function App() {
 
   return (
     <>
-     <Button colorPalette="teal" variant="surface" marginBottom="20px" onClick={()=>{setIsOpen(true)}}>
+    <Box height='17.5vh' width='100%' backgroundColor={'#242424'}  position={'fixed'} zIndex={'9'} padding={'30px'}>
+     <Button colorPalette="teal" variant="surface" marginBottom="20px" onClick={()=>{setIsOpen(true)}}  position={'fixed'} >
             <LuClock />{" "}
             {threadDumpData?.timestamp
               ? "Time Stamp : " + threadDumpData.timestamp
               : ""}
             <LuInfo />
           </Button>
-  
+    </Box>
        {timestamps.length != 0 && <TimeStampDrawer data={timestamps} onThreadDataChnage={chnageTheadDumpData} isOpen={isOpen} closeDrawer={()=>{setIsOpen(false)}}/>}
   
-      <Tabs.Root fitted defaultValue="summary">
-        <Tabs.List>
+      <Tabs.Root variant={'subtle'} fitted defaultValue="summary" >
+        <Tabs.List position={'fixed'} top={'12%'} zIndex={'9'} width={'100%'} >
           <Tabs.Trigger value="summary">
             <LuNotebook />
             Summary
           </Tabs.Trigger>
           <Tabs.Trigger value="threads">
-            <LuFolder />
+            <PiTreeStructure />
             Threads
           </Tabs.Trigger>
-          <Tabs.Trigger value="tasks">
-            <LuSquareCheck />
-            Settings
+          <Tabs.Trigger value="deadlocks">
+            <FaBookDead />
+            Deadlocks
+          </Tabs.Trigger>
+          <Tabs.Trigger value="lastExecutedMethods">
+            <SiLastpass />
+            Last Executed Methods
           </Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="summary">
@@ -534,8 +173,11 @@ function App() {
         <Tabs.Content value="threads">
            {threadDumpData && (  <ThreadsByState threadsByState={threadDumpData.threadGroupResult} /> )}
         </Tabs.Content>
-        <Tabs.Content value="tasks">
-          Manage your tasks for freelancers
+        <Tabs.Content value="deadlocks">
+           {threadDumpData &&<Deadlock thread={threadDumpData.threadDeadlocks.jvmReportedDeadlocks.length != 0 ? threadDumpData.threadDeadlocks.jvmReportedDeadlocks[0] : [] }/>}
+        </Tabs.Content>
+         <Tabs.Content value="lastExecutedMethods">
+           {threadDumpData &&<LastExecutedMethods lastExecutedMethods={threadDumpData.lastExecutedMethods} totalThreadSize={threadDumpData.threadSummary.totalThreads}/>}
         </Tabs.Content>
       </Tabs.Root>
     </>

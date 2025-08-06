@@ -13,9 +13,10 @@ import { FaRunning } from "react-icons/fa";
 //           summary.deadlockedThreads || 0,
 export const Dashboard = ({summary}) => {
   return (
-      <Box  display="flex" flexDirection="column" justifyContent="space-around" width="600px" marginTop="20px" padding="20px" >
+    <Box marginTop={'15vh'} height={'100%'} width={'100%'} display={'flex'} justifyContent={'center'} padding="20px 200px 0px 170px"   >
+      <Box  display="flex" flexDirection="column" justifyContent="space-around" width="100%" >
         <Text fontSize="lg" fontWeight="bold">Total No of Threads: {summary.totalThreads || 0}</Text>
-        <Box display="flex" flexDirection="row" justifyContent="space-around" alignItems="center" mb={4}>
+        <Box  display="flex" flexDirection="row" justifyContent="space-around" alignItems="center" width={"100%"} height={'550px'}>
             <Box  style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', columnGap: '30px' ,scale: '0.8', rowGap: '0px'}}>
                 {summary.runnableThreads != 0 && <ThreadGaugeChart value={summary.runnableThreads || 0} total={summary.totalThreads} label="Runnable Threads" color="#22c55e" />}
                 {summary.blockedThreads != 0 && <ThreadGaugeChart value={summary.blockedThreads || 0} total={summary.totalThreads} label="Blocked Threads" color="#232020ff" />}
@@ -23,7 +24,7 @@ export const Dashboard = ({summary}) => {
                 {summary.waitingThreads != 0 && <ThreadGaugeChart value={summary.waitingThreads || 0} total={summary.totalThreads} label="Waiting Threads" color="#ede43aff" />}
                 {summary.timedWaitingThreads != 0 && <ThreadGaugeChart value={summary.timedWaitingThreads || 0} total={summary.totalThreads} label="Timed Waiting Threads" color="#3accedff" />}
             </Box>
-            <div>
+            <Box>
                 {/* <Summery summary={summary}/> */}
                 <DonoutChart data={[
                   {name: "Runnable Threads", value: summary.runnableThreads || 0, color: "#22c55e"},
@@ -32,10 +33,11 @@ export const Dashboard = ({summary}) => {
                   {name: "Blocked Threads", value: summary.blockedThreads || 0, color: "#232020ff"},
                   //{name: "Deadlocked Threads", value: summary.deadlockedThreads || 0, color: "#ed3a3aff"}
                 ]}/>
-            </div>
+            </Box>
           
-        </Box>      
+          </Box>      
         </Box>
+    </Box>
   
   )
 }

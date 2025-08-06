@@ -15,6 +15,7 @@ import {
   Dialog,
   CloseButton,
   Portal,
+  HStack,
 } from "@chakra-ui/react";
 import {
   LuCpu,
@@ -30,6 +31,7 @@ import {
 import { FaStackOverflow } from "react-icons/fa";
 import { CgDetailsMore } from "react-icons/cg";
 import { useRef, useState } from "react";
+import { VirtualizedThreadList } from "./ThreadsByState";
 
 function ThreadCard({ thread,close  }) {
   const { isOpen, onToggle } = useDisclosure();
@@ -240,6 +242,8 @@ const ThreadCardPreview = ({thread}) => {
     </Dialog.Root>
   )
 
+  
+
   //  <>
   //       <Box
   //     borderWidth="1px"
@@ -329,4 +333,46 @@ function getStateColor(state) {
   }
 }
 
+export const ThreadCardPreviewCustom = ({thread , isOpen,close}) => {
+ // const [isOpen ,setIsOpen]= useState(false);
+  return (
+    <Dialog.Root size="xl"  placement={'center'} motionPreset={'slide-in-top'} open={isOpen}>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content borderRadius="2xl" width="-moz-max-content">
+           
+              <ThreadCard thread={thread} close={()=>{close()}}></ThreadCard>
+          
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  )
+}
+
+export const ThreadListPreviewCustom = ({title, threads , isOpen,close}) => {
+ // const [isOpen ,setIsOpen]= useState(false);
+  return (
+    <Dialog.Root size="cover"  placement={'center'} motionPreset={'slide-in-top'} open={isOpen}>
+      <Portal>
+        <Dialog.Backdrop />
+        <Dialog.Positioner>
+          <Dialog.Content borderRadius="2xl" width="-moz-max-content">
+            <Dialog.Header>
+              <Box display={'flex'} width={'100%'} alignContent={'center'} justifyContent={'space-between'}>
+              <Text fontFamily={'monospace'} fontSize={'larger'}>{title}</Text>
+              <CloseButton   onClick={()=>{close()}}/>
+               </Box>
+              </Dialog.Header>
+              <Box padding={'0px 40px 0px 40px'} overflow={'hidden'} scrollBehavior={'smooth'}>
+                  <VirtualizedThreadList threads={threads} ></VirtualizedThreadList>
+              </Box>
+            
+          </Dialog.Content>
+        </Dialog.Positioner>
+      </Portal>
+    </Dialog.Root>
+  )
+}
 export default ThreadCardPreview;

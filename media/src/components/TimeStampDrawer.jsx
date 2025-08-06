@@ -26,7 +26,7 @@ export const TimeStampDrawer = ({data,onThreadDataChnage,isOpen,closeDrawer}) =>
                      <Stack>
                         {data.map((timestamp,index)=>{
                           return (
-                                <Button width="full" colorPalette="teal" variant="surface" onClick={()=>{onThreadDataChnage(index)}} >
+                                <Button key={index} width="full" colorPalette="teal" variant="surface" onClick={()=>{onThreadDataChnage(index)}} >
                                         <LuClock />{timestamp ? timestamp: "There no Time Stamp"}
                                 </Button>
                           )

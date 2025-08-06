@@ -8,10 +8,11 @@ import { VariableSizeList as List } from 'react-window';
 
 export const ThreadsByState = ({ threadsByState }) => {
   return (
-    <Stack width="full">
+    <Stack width="full" marginTop={'15vh'} padding={'40px'}>
       {/* <Heading size="md">Product details</Heading> */}
       <Accordion.Root collapsible defaultValue={[]}>
          {Object.keys(threadsByState).map((state) => (
+          Array.isArray(threadsByState[state]) && 
           <Accordion.Item key={state} value={state}>
             <Accordion.ItemTrigger>
                 <Flex justifyContent="space-between"  width="full" padding="4" borderWidth="1px" borderRadius="md" boxShadow="sm" marginBottom="2">
@@ -41,7 +42,7 @@ export const ThreadsByState = ({ threadsByState }) => {
   )
 }
 
-const VirtualizedThreadList = ({ threads }) => {
+export const VirtualizedThreadList = ({ threads }) => {
   const listRef = useRef();
 
   // Estimate item size or measure dynamically if needed
