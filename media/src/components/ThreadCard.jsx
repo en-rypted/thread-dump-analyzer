@@ -16,6 +16,7 @@ import {
   CloseButton,
   Portal,
   HStack,
+  EmptyState,
 } from "@chakra-ui/react";
 import {
   LuCpu,
@@ -32,6 +33,7 @@ import { FaStackOverflow } from "react-icons/fa";
 import { CgDetailsMore } from "react-icons/cg";
 import { useRef, useState } from "react";
 import { VirtualizedThreadList } from "./ThreadsByState";
+import { EmptyStateCustom } from "./EmptyState";
 
 function ThreadCard({ thread,close  }) {
   const { isOpen, onToggle } = useDisclosure();
@@ -366,7 +368,7 @@ export const ThreadListPreviewCustom = ({title, threads , isOpen,close}) => {
                </Box>
               </Dialog.Header>
               <Box padding={'0px 40px 0px 40px'} overflow={'hidden'} scrollBehavior={'smooth'}>
-                  <VirtualizedThreadList threads={threads} ></VirtualizedThreadList>
+                 {threads.length != 0 ? <VirtualizedThreadList threads={threads} ></VirtualizedThreadList>: <EmptyStateCustom/> }
               </Box>
             
           </Dialog.Content>

@@ -6,23 +6,25 @@ import DonoutChart from './DonoutChart.jsx'
 import { Box,Text } from '@chakra-ui/react'
 import { ThreadNoCard } from './ThreadNoCard.jsx'
 import { FaRunning } from "react-icons/fa";
+import { ThreadStat } from './ThreadStat.jsx'
+import { ThreadList } from './ThreadsByState.jsx'
 // summary.runnableThreads || 0,
 //           summary.waitingThreads || 0,
 //           summary.timedWaitingThreads || 0,
 //           summary.blockedThreads || 0,
 //           summary.deadlockedThreads || 0,
-export const Dashboard = ({summary}) => {
+export const Dashboard = ({summary,threadByState}) => {
   return (
     <Box marginTop={'15vh'} height={'100%'} width={'100%'} display={'flex'} justifyContent={'center'} padding="20px 200px 0px 170px"   >
       <Box  display="flex" flexDirection="column" justifyContent="space-around" width="100%" >
-        <Text fontSize="lg" fontWeight="bold">Total No of Threads: {summary.totalThreads || 0}</Text>
+       
         <Box  display="flex" flexDirection="row" justifyContent="space-around" alignItems="center" width={"100%"} height={'550px'}>
-            <Box  style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', columnGap: '30px' ,scale: '0.8', rowGap: '0px'}}>
-                {summary.runnableThreads != 0 && <ThreadGaugeChart value={summary.runnableThreads || 0} total={summary.totalThreads} label="Runnable Threads" color="#22c55e" />}
-                {summary.blockedThreads != 0 && <ThreadGaugeChart value={summary.blockedThreads || 0} total={summary.totalThreads} label="Blocked Threads" color="#232020ff" />}
+            <Box  style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', columnGap: '50px' ,scale: '1.08', rowGap: '60px'}}>
+                {summary.runnableThreads != 0 && <ThreadList threads={threadByState.runnable} summary={summary} state={'runnable'} />}
+                {summary.blockedThreads != 0 && <ThreadList threads={threadByState.blocked} summary={summary} state={'blocked'} />}
                 {/* {summary.deadlockedThreads != 0 && <ThreadGaugeChart value={summary.deadlockedThreads || 0} total={summary.totalThreads} label="Deadlocked Threads" color="#ed3a3aff" />} */}
-                {summary.waitingThreads != 0 && <ThreadGaugeChart value={summary.waitingThreads || 0} total={summary.totalThreads} label="Waiting Threads" color="#ede43aff" />}
-                {summary.timedWaitingThreads != 0 && <ThreadGaugeChart value={summary.timedWaitingThreads || 0} total={summary.totalThreads} label="Timed Waiting Threads" color="#3accedff" />}
+                {summary.waitingThreads != 0 && <ThreadList threads={threadByState.waiting} summary={summary} state={'waiting'} />}
+                {summary.timedWaitingThreads != 0 && <ThreadList threads={threadByState.timedWaiting} summary={summary} state={'timedWaiting'} />}
             </Box>
             <Box>
                 {/* <Summery summary={summary}/> */}
@@ -41,3 +43,5 @@ export const Dashboard = ({summary}) => {
   
   )
 }
+
+

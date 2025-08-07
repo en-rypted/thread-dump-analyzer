@@ -6,18 +6,18 @@ import { ThreadListPreviewCustom } from './ThreadCard'
 export const LastExecutedMethods = ({lastExecutedMethods,totalThreadSize}) => {
    
   return (
-    <Box width={'100%'} marginTop={'15vh'} padding={'40px'}>
-    <Table.Root size="lg"  >
+    <Box width={'100%'} marginTop={'15vh'} padding={'40px'} >
+    <Table.Root size="lg" >
       <Table.Header  >
-        <Table.Row>
-          <Table.ColumnHeader>Thread Count</Table.ColumnHeader>
+        <Table.Row backgroundColor={'blackAlpha.600'} borderTopEndRadius={'15px'}>
+          <Table.ColumnHeader borderTopLeftRadius={'15px'}>Thread Count</Table.ColumnHeader>
           <Table.ColumnHeader>Method</Table.ColumnHeader>
-          <Table.ColumnHeader textAlign="end">Percentage</Table.ColumnHeader>
+          <Table.ColumnHeader textAlign="end" borderTopRightRadius={'15px'}>Percentage</Table.ColumnHeader>
         </Table.Row>
       </Table.Header>
-      <Table.Body>
+      <Table.Body >
         {Object.keys(lastExecutedMethods).map((key) => (
-          <Table.Row key={key}>
+          <Table.Row key={key}  backgroundColor={'blackAlpha.300'}>
             <Table.Cell>{lastExecutedMethods[key].length} threads</Table.Cell>
             <Table.Cell>
                 {/* <Text fontSize="sm" fontFamily={'monospace'} pl={6}>
@@ -54,7 +54,7 @@ const StackTrace =({lastMethod,stackTrace,threads})=>{
                  open={open} onOpenChange={() => setOpen(!open)}>
                           <Stack  spacing={3} mt={4}>
                             {!open && (
-                              <Text colorScheme="green" fontSize="sm" fontFamily={'monospace'} width={"100%"} pl={6}>
+                              <Text fontSize="sm" fontFamily={'monospace'} width={"100%"} pl={6}>
                                 <Code color={'yellow.300'}>{lastMethod}</Code> …{" "}
                                 <u onClick={() => setOpen(true)}>show more</u>
                               </Text>

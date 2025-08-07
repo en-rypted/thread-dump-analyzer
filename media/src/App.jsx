@@ -4,7 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Summery } from "./components/Summery.jsx";
 import { Dashboard } from "./components/Dashboard.jsx";
-import { Tabs, Drawer, Button, Box } from "@chakra-ui/react";
+import { Tabs, Drawer, Button, Box, Heading, Wrap, Code } from "@chakra-ui/react";
 import { ToggleTip } from "@/components/ui/toggle-tip";
 import {
   LuFolder,
@@ -14,10 +14,10 @@ import {
   LuClock,
   LuInfo,
 } from "react-icons/lu";
-import { FaBookDead } from "react-icons/fa";
-import { SiLastpass } from "react-icons/si";
-import ThreadCard from "./components/ThreadCard.jsx";
-import { ThreadsByState } from "./components/ThreadsByState.jsx";
+import { HiOutlineCpuChip } from "react-icons/hi2";
+import { CgRowLast } from "react-icons/cg";
+import { FaSkull } from "react-icons/fa";
+import { ThreadByStateCard, ThreadsByState, VirtualizedThreadList } from "./components/ThreadsByState.jsx";
 import { TimeStampDrawer } from "./components/TimeStampDrawer.jsx";
 import {dataDummy} from '../../test/dummyData'
 import Deadlock from "./components/Deadlock";
@@ -146,32 +146,36 @@ function App() {
     </Box>
        {timestamps.length != 0 && <TimeStampDrawer data={timestamps} onThreadDataChnage={chnageTheadDumpData} isOpen={isOpen} closeDrawer={()=>{setIsOpen(false)}}/>}
   
-      <Tabs.Root variant={'subtle'} fitted defaultValue="summary" >
-        <Tabs.List position={'fixed'} top={'12%'} zIndex={'9'} width={'100%'} >
+      <Tabs.Root variant={'subtle'}  defaultValue="summary"  >
+        <Tabs.List position={'fixed'} top={'12%'} zIndex={'9'} width={'100%'} paddingLeft={'30px'} paddingRight={'30px'} >
           <Tabs.Trigger value="summary">
-            <LuNotebook />
+            <LuNotebook size={'18'} />
             Summary
           </Tabs.Trigger>
           <Tabs.Trigger value="threads">
-            <PiTreeStructure />
+            <PiTreeStructure size={'20'} />
             Threads
           </Tabs.Trigger>
           <Tabs.Trigger value="deadlocks">
-            <FaBookDead />
+            <FaSkull size={'18'}  />
             Deadlocks
           </Tabs.Trigger>
           <Tabs.Trigger value="lastExecutedMethods">
-            <SiLastpass />
+            <CgRowLast size={'25'} />
             Last Executed Methods
+          </Tabs.Trigger>
+           <Tabs.Trigger value="cpuConsumingThreads">
+            <HiOutlineCpuChip size={'22'} />
+            CPU Consuming Threads
           </Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="summary">
           {threadDumpData && (
-            <Dashboard summary={threadDumpData.threadSummary} />
+            <Dashboard threadByState={threadDumpData.threadGroupResult} summary={threadDumpData.threadSummary} />
           )}
         </Tabs.Content>
         <Tabs.Content value="threads">
-           {threadDumpData && (  <ThreadsByState threadsByState={threadDumpData.threadGroupResult} /> )}
+           {threadDumpData && (  <ThreadByStateCard threadsByState={threadDumpData.threadGroupResult} summary={threadDumpData.threadSummary} /> )}
         </Tabs.Content>
         <Tabs.Content value="deadlocks">
            {threadDumpData &&<Deadlock thread={threadDumpData.threadDeadlocks.jvmReportedDeadlocks.length != 0 ? threadDumpData.threadDeadlocks.jvmReportedDeadlocks[0] : [] }/>}
@@ -179,9 +183,50 @@ function App() {
          <Tabs.Content value="lastExecutedMethods">
            {threadDumpData &&<LastExecutedMethods lastExecutedMethods={threadDumpData.lastExecutedMethods} totalThreadSize={threadDumpData.threadSummary.totalThreads}/>}
         </Tabs.Content>
+        <Tabs.Content value="cpuConsumingThreads">
+           {threadDumpData && 
+              <Box  marginTop={'15vh'} height={'70vh'} padding={"50px"} >
+                <Wrap>
+                  <Heading size={'lg'} fontFamily={'monospace'}>Threads flagged as RUNNABLE but exhibiting idle behavior (e.g., sleeping, parking) are excluded. <Code size={'lg'} colorPalette={'orange'}>{threadDumpData.threadGroupResult.runnable.filter(thread=>isMisleadingRunnable(thread)).length + " threds out of " + threadDumpData.threadSummary.runnableThreads + " threads" } </Code></Heading>
+                  <VirtualizedThreadList threads={threadDumpData.threadGroupResult.runnable.filter(thread=>isMisleadingRunnable(thread))}></VirtualizedThreadList>
+                </Wrap>
+              </Box>
+           }
+        </Tabs.Content>
       </Tabs.Root>
     </>
   );
+}
+
+const misleadingPatterns = [
+  /socketRead0/i,
+  /read\(.*InputStream/i,
+  /Scanner\.next/i,
+  /Thread\.sleep/i,
+  /LockSupport\.park/i,
+  /sun\.nio\.ch\./i,
+];
+
+const misleadingStateDetails = [
+  /parking/i,
+  /waiting on condition/i,
+  /sleeping/i,
+  /waiting/i,
+];
+
+function isMisleadingRunnable(thread) {
+  if (thread.state !== 'RUNNABLE') return false;
+
+  const hasMisleadingStack = thread.stackTrace?.some(line =>
+    misleadingPatterns.some(pattern => pattern.test(line))
+  );
+
+  const hasMisleadingStateDetails = thread.stateDetails &&
+    misleadingStateDetails.some(pattern =>
+      pattern.test(thread.stateDetails)
+    );
+
+  return hasMisleadingStack;
 }
 
 export default App;
